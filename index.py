@@ -1,6 +1,21 @@
 from dash import dcc, html
 import dash_bootstrap_components as dbc
 
+tabs_styles = {
+    'height': '44px'
+}
+tab_style = {
+    'padding': '6px',
+    'fontWeight': 'bold'
+}
+tab_selected_style = {
+    'borderTop': '1px solid #d6d6d6',
+    'borderBottom': '1px solid #d6d6d6',
+    'backgroundColor': '#119DFF',
+    'color': 'white',
+    'padding': '6px'
+}
+
 index = html.Div([
     html.H1('甲鱼的数学战锤'),
 
@@ -70,24 +85,38 @@ index = html.Div([
         ),
         dbc.Col([
             html.Div([
+                dcc.Tabs([
 
-                html.P('是否全重投命中结果（所有失败的结果）？'),
-                dcc.Checklist(id='reroll_hits',
-                              options=[{'label': '是', 'value': 'yes'}],
-                              value=[]),
-                html.P('是否重投结果为1的命中？'),
-                dcc.Checklist(id='reroll_hit1',
-                              options=[{'label': '是', 'value': 'yes'}],
-                              value=[]),
-                html.P('是否全重投造伤？（所有失败的结果）'),
-                dcc.Checklist(id='reroll_wounds',
-                              options=[{'label': '是', 'value': 'yes'}],
-                              value=[]),
+                    dcc.Tab(label='通用特效', children=[
+                        html.Div([
+                            dbc.Checkbox(id="reroll_hits",
+                                         label="全重投命中",
+                                         value=False, ),
+                            dbc.Checkbox(id="reroll_hit1",
+                                         label="重投命中1",
+                                         value=False, ),
+                            dbc.Checkbox(id="reroll_wounds",
+                                         label="全重投造伤",
+                                         value=False, )
+                        ], className="input_name"),
+                    ], style=tab_style, selected_style=tab_selected_style, className="rounded-3"),
 
-                html.P('是否有连击1'),
-                dcc.Checklist(id='combo_strike',
-                              options=[{'label': '是', 'value': 'yes'}],
-                              value=[]),
+                    dcc.Tab(label='武器特效', children=[
+                        html.Div([
+                            dbc.Checkbox(id="combo_strike",
+                                         label="连击1",
+                                         value=False, )
+                        ], className="input_name"),
+                    ], style=tab_style, selected_style=tab_selected_style, className="rounded-3"),
+                    # dbc.InputGroup(
+                    #     [
+                    #         dbc.InputGroupText(dbc.Checkbox()),
+                    #         dbc.InputGroupText("连击"),
+                    #         dbc.Input(placeholder="数量", type="number"),
+                    #     ],
+                    #     className="mb-3",
+                    # ),
+                ], style=tabs_styles),
             ],
                 className="h-100 p-5 bg-light border rounded-3",
             ),
