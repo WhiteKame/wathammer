@@ -4,6 +4,7 @@ import numpy as np
 from dash import dcc, html
 from dash.dependencies import Input, Output, State
 import plotly.graph_objects as go
+from dash.exceptions import PreventUpdate
 from plotly.subplots import make_subplots
 import random
 import re
@@ -12,168 +13,36 @@ from index import index
 
 
 # ...你的模拟代码，如simulate函数...
-def process_dice_input(dice_input):
-    pattern = re.compile(r'(\d*)D(3|6)\+*(\d*)')
-    match = pattern.match(dice_input)
 
-    if match:
-        dice_count = match.group(1)
-        dice_value = int(match.group(2))
-        if dice_count == '':  # Default to 1 if no dice count is provided
-            dice_count = 1
-        else:
-            dice_count = int(dice_count)
-
-        plus_value = match.group(3)
-        if plus_value == '':  # Default to 0 if no plus value is provided
-            plus_value = 0
-        else:
-            plus_value = int(plus_value)
-
-        dice_output = sum(max(1, random.randint(1, dice_value)) for _ in range(dice_count)) + plus_value
-    elif dice_input.isdigit():
-        dice_output = int(dice_input)
-    else:
-        print(f"Invalid attack input: '{dice_input}'")
-        raise ValueError("Invalid attack input. Please enter a number or a format like '3D6' or 'D6+1' or 'D3'.")
-
-    return dice_output
-
-
-def process_input_value(input_value):
-    if isinstance(input_value, str):
-        if 'D' in input_value:
-            return input_value
-        elif input_value.isdigit():
-            return int(input_value)
-        else:
-            raise ValueError("Invalid input. Please enter a number or a format like '3D6'.")
-    elif isinstance(input_value, int):
-        return input_value
-    else:
-        raise ValueError("Invalid input. Please enter a number or a format like '3D6'.")
-
-
-def roll_dice(hit_value, wound_value, armor_value, damage_value, pain_value, reroll_hits, reroll_wounds, reroll_hit1,
-              combo_strike):
-    hit_success, wound_success, protected_fail, damage = 0, 0, 0, 0
-    extra_hit = 0
-
-    # Roll for hit
-    hit_roll = random.randint(1, 6)
-
-    # If reroll for hit roll of 1 is allowed
-    if hit_roll == 1 and reroll_hit1:
-        hit_roll = random.randint(1, 6)
-    # If reroll for failed hit roll is allowed
-    elif hit_roll < hit_value and reroll_hits:
-        hit_roll = random.randint(1, 6)
-
-    if hit_roll >= hit_value:
-        hit_success = 1
-        if hit_roll == 6 and combo_strike:
-            extra_hit = 1
-
-    # Roll for wound
-    if hit_success:
-        wound_roll = random.randint(1, 6)
-        if wound_roll >= wound_value:
-            wound_success = 1
-        elif reroll_wounds and wound_roll < wound_value:
-            wound_roll = random.randint(1, 6)
-            if wound_roll >= wound_value:
-                wound_success = 1
-
-    # Roll for armor save
-    if wound_success:
-        armor_roll = random.randint(1, 6)
-        if armor_roll < armor_value:
-            protected_fail = 1
-
-    # Roll for not pain
-    if protected_fail:
-        if 'D' in str(damage_value):
-            damage_result = process_dice_input(damage_value)
-        else:
-            damage_result = int(damage_value)
-
-        if pain_value == 7:  # 不触发pain检测
-            damage += damage_result
-        else:  # 进行pain检测
-            for _ in range(damage_result):  # check for not pain
-                pain_roll = random.randint(1, 6)
-                if pain_roll < pain_value:
-                    damage += 1
-
-    return hit_success, wound_success, protected_fail, damage, extra_hit
-
-
-def simulate(attack_input, hit_value, wound_value, armor_value, damage_value, pain_value, reroll_hits, reroll_wounds,
-             reroll_hit1, combo_strike):
-    total_unprotected_count, total_hit_success, total_wound_success, total_damage_value = 0, 0, 0, 0
-    total_extra_hit = 0
-
-    attack_times = 0
-
-    if 'D' in str(attack_input):
-        attack_times = process_dice_input(attack_input)
-    else:
-        attack_times = int(attack_input)
-
-    for _ in range(attack_times):
-        hit_success, wound_success, unprotected_count, damage, extra_hit = roll_dice(hit_value, wound_value,
-                                                                                     armor_value,
-                                                                                     damage_value, pain_value,
-                                                                                     reroll_hits,
-                                                                                     reroll_wounds, reroll_hit1,
-                                                                                     combo_strike)
-
-        total_hit_success += hit_success
-        total_wound_success += wound_success
-        total_unprotected_count += unprotected_count
-        total_damage_value += damage
-        total_extra_hit += extra_hit
-
-    for _ in range(total_extra_hit):
-        # 额外命中
-        hit_success, wound_success, unprotected_count, damage, extra_hit = roll_dice(0, wound_value,
-                                                                                     armor_value,
-                                                                                     damage_value, pain_value,
-                                                                                     reroll_hits,
-                                                                                     reroll_wounds, reroll_hit1,
-                                                                                     "no")
-        total_hit_success += hit_success
-        total_wound_success += wound_success
-        total_unprotected_count += unprotected_count
-        total_damage_value += damage
-        # Reset extra hit for each simulation
-        total_extra_hit = 0
-
-    return total_hit_success, total_wound_success, total_unprotected_count, total_damage_value
 
 
 app = dash.Dash(__name__,
-                external_stylesheets=[dbc.themes.BOOTSTRAP])
+                external_stylesheets=[dbc.themes.BOOTSTRAP],
+                meta_tags=[
+                    {"name": "viewport", "content": "width=device-width, initial-scale=1"},
+                ],
+                )
 
 app.layout = html.Div([index])
 
 
 @app.callback(
     Output('simulation-graph', 'figure'),
-    [Input('run-button', 'n_clicks')],  # 改变这里
+    [Input('run-button', 'n_clicks'),
+     Input('hit_value', 'value'),
+     Input('wound_value', 'value'),
+     Input('armor_value', 'value'),
+     Input('pain_value', 'value'),
+     Input('reroll_hits', 'value'),
+     Input('reroll_wounds', 'value'),
+     Input('reroll_hit1', 'value'),
+     Input('combo_strike', 'value')
+     ],  # 改变这里
     [State('attack_input', 'value'),
-     State('hit_value', 'value'),
-     State('wound_value', 'value'),
-     State('armor_value', 'value'),
-     State('pain_value', 'value'),
-     State('damage_value', 'value'),
-     State('reroll_hits', 'value'),
-     State('reroll_wounds', 'value'),
-     State('reroll_hit1', 'value'),
-     State('combo_strike', 'value')]
+     State('damage_value', 'value')]
 )
-def update_graph(n_clicks, attack_input, hit_value, wound_value, armor_value, pain_value, damage_value, reroll_hits,
-                 reroll_wounds, reroll_hit1, combo_strike):
+def update_graph(n_clicks, hit_value, wound_value, armor_value, pain_value, reroll_hits, reroll_wounds, reroll_hit1,
+                 combo_strike, attack_input, damage_value):
     if n_clicks is None:  # 刚开始的时候不执行模拟
         return go.Figure()
 
@@ -221,6 +90,26 @@ def update_graph(n_clicks, attack_input, hit_value, wound_value, armor_value, pa
     )
 
     return fig
+
+@app.callback(
+    [Output('attack_input', 'value'),
+     Output('hit_value', 'value'),
+     Output('wound_value', 'value'),
+     Output('armor_value', 'value'),
+     Output('pain_value', 'value'),
+     Output('damage_value', 'value'),
+     Output('reroll_hits', 'value'),
+     Output('reroll_wounds', 'value'),
+     Output('reroll_hit1', 'value'),
+     Output('combo_strike', 'value')],
+    [Input('reset-button', 'n_clicks')]
+)
+def reset_values(n):
+    if n is None:
+        # prevent the callbacks to be executed when the dashboard starts
+        raise PreventUpdate
+    else:
+        return 4, 4, 4, 4, 7, 1, False, False, False, False  # replace these values with your default values
 
 
 if __name__ == '__main__':

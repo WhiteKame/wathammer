@@ -6,3 +6,10 @@ body {
     margin: 1em 0px;
 }
 
+#reset-button {
+    margin: 0px  20px;
+}
+
+.rc-slider-mark-text {
+    min-width: 24px;
+}
