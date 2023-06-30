@@ -6,15 +6,10 @@ from dash.dependencies import Input, Output, State
 import plotly.graph_objects as go
 from dash.exceptions import PreventUpdate
 from plotly.subplots import make_subplots
-import random
-import re
 
 from index import index
-
-
-# ...你的模拟代码，如simulate函数...
-
-
+from function import simulate
+from dice_input import process_dice_input, process_input_value
 
 app = dash.Dash(__name__,
                 external_stylesheets=[dbc.themes.BOOTSTRAP],
@@ -90,6 +85,7 @@ def update_graph(n_clicks, hit_value, wound_value, armor_value, pain_value, rero
     )
 
     return fig
+
 
 @app.callback(
     [Output('attack_input', 'value'),

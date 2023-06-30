@@ -19,48 +19,88 @@ index = html.Div([
             className="mb-3", xs=12, md=4),
         dbc.Col([
             html.Div([
-                html.P('输入命中值:'),
-                # dcc.Input(id='hit_value', type='number', value=4),
-                dcc.Slider(2, 6, 1,
-                           value=4,
-                           id='hit_value'
-                           ),
-                html.P('输入造伤值:'),
-                # dcc.Input(id='wound_value', type='number', value=4),
-                dcc.Slider(2, 6, 1,
-                           value=4,
-                           id='wound_value'
-                           ),
-                html.P('输入保护值:'),
-                # dcc.Input(id='armor_value', type='number', value=4),
-                dcc.Slider(2, 7, 1,
-                           value=4,
-                           marks={
-                               2: {'label': '2'},
-                               3: {'label': '3'},
-                               4: {'label': '4'},
-                               5: {'label': '5'},
-                               6: {'label': '6'},
-                               7: {'label': '过穿', 'style': {'color': '#f50'}}
-                           },
-                           id='armor_value',
-                           included=True
-                           ),
-                html.P('输入不怕疼:'),
-                # dcc.Input(id='pain_value', type='number', value=7),
-                dcc.Slider(2, 7, 1,
-                           value=7,
-                           marks={
-                               2: {'label': '2'},
-                               3: {'label': '3'},
-                               4: {'label': '4'},
-                               5: {'label': '5'},
-                               6: {'label': '6'},
-                               7: {'label': "没有", 'style': {'color': '#f50'}}
-                           },
-                           id='pain_value',
-                           included=True
-                           ),
+                dbc.Tabs([
+                    dbc.Tab(
+                        html.Div([
+                            html.P('输入命中值:'),
+                            # dcc.Input(id='hit_value', type='number', value=4),
+                            dcc.Slider(2, 6, 1,
+                                       value=4,
+                                       id='hit_value'
+                                       ),
+                            html.P('输入造伤值:'),
+                            # dcc.Input(id='wound_value', type='number', value=4),
+                            dcc.Slider(2, 6, 1,
+                                       value=4,
+                                       id='wound_value'
+                                       ),
+                            html.P('输入保护值:'),
+                            # dcc.Input(id='armor_value', type='number', value=4),
+                            dcc.Slider(2, 7, 1,
+                                       value=4,
+                                       marks={
+                                           2: {'label': '2+'},
+                                           3: {'label': '3+'},
+                                           4: {'label': '4+'},
+                                           5: {'label': '5+'},
+                                           6: {'label': '6+'},
+                                           7: {'label': '过穿', 'style': {'color': '#f50'}}
+                                       },
+                                       id='armor_value',
+                                       included=True
+                                       ),
+                            html.P('输入不怕疼:'),
+                            # dcc.Input(id='pain_value', type='number', value=7),
+                            dcc.Slider(2, 7, 1,
+                                       value=7,
+                                       marks={
+                                           2: {'label': '2+'},
+                                           3: {'label': '3+'},
+                                           4: {'label': '4+'},
+                                           5: {'label': '5+'},
+                                           6: {'label': '6+'},
+                                           7: {'label': "没有", 'style': {'color': '#f50'}}
+                                       },
+                                       id='pain_value',
+                                       included=True
+                                       ),
+                        ]), label='数值'
+                    ),
+                    dbc.Tab(
+                        html.Div([
+                            html.P('输入命中修正:'),
+                            dcc.Slider(-1, 1, 1,
+                                       value=0,
+                                       marks={
+                                           -1: {'label': '-1'},
+                                           0: {'label': '0'},
+                                           1: {'label': '+1'}
+                                       },
+                                       id='hit_modify'
+                                       ),
+                            html.P('输入造伤修正:'),
+                            dcc.Slider(-1, 1, 1,
+                                       value=0,
+                                       marks={
+                                           -1: {'label': '-1'},
+                                           0: {'label': '0'},
+                                           1: {'label': '+1'}
+                                       },
+                                       id='wound_modify'
+                                       ),
+                            html.P('输入保护修正:'),
+                            dcc.Slider(-1, 1, 1,
+                                       value=0,
+                                       marks={
+                                           -1: {'label': '-1'},
+                                           0: {'label': '0'},
+                                           1: {'label': '+1'}
+                                       },
+                                       id='save_modify'
+                                       ),
+                        ]), label='修正'
+                    ),
+                ]),
             ], className="h-100 p-5 bg-light border rounded-3 mb-3"),
         ],
             className="mb-3", xs=12, md=4
