@@ -8,7 +8,7 @@ from dash.exceptions import PreventUpdate
 from plotly.subplots import make_subplots
 
 from index import index
-from function import simulate
+from simulate import simulate
 from dice_input import process_dice_input, process_input_value
 
 app = dash.Dash(__name__,

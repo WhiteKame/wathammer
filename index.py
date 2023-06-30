@@ -8,9 +8,9 @@ index = html.Div([
         dbc.Col([
             html.Div([
                 html.P('输入攻击次数:'),
-                dbc.Input(id='attack_input', className='input_name', type='text', value=4),
+                dbc.Input(id='attack_input', className='input_name', type='text', placeholder='输入x, xD6, xD6+x'),
                 html.P('输入单次伤害:'),
-                dbc.Input(id='damage_value', className='input_name', type='text', value=1),
+                dbc.Input(id='damage_value', className='input_name', type='text', placeholder='输入x, xD6, xD6+x'),
                 dbc.Button('运行', id='run-button', color='primary'),
                 dbc.Button('重置', id='reset-button', color='light')
             ],
