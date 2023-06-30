@@ -96,7 +96,7 @@ index = html.Div([
                                            0: {'label': '0'},
                                            1: {'label': '+1'}
                                        },
-                                       id='save_modify'
+                                       id='armor_modify'
                                        ),
                         ]), label='修正'
                     ),

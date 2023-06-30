@@ -24,10 +24,16 @@ app.layout = html.Div([index])
 @app.callback(
     Output('simulation-graph', 'figure'),
     [Input('run-button', 'n_clicks'),
+     # 数值输入
      Input('hit_value', 'value'),
      Input('wound_value', 'value'),
      Input('armor_value', 'value'),
      Input('pain_value', 'value'),
+     # 修正输入
+     Input('hit_modify', 'value'),
+     Input('wound_modify', 'value'),
+     Input('armor_modify', 'value'),
+     # 特殊规则
      Input('reroll_hits', 'value'),
      Input('reroll_wounds', 'value'),
      Input('reroll_hit1', 'value'),
@@ -36,8 +42,13 @@ app.layout = html.Div([index])
     [State('attack_input', 'value'),
      State('damage_value', 'value')]
 )
-def update_graph(n_clicks, hit_value, wound_value, armor_value, pain_value, reroll_hits, reroll_wounds, reroll_hit1,
-                 combo_strike, attack_input, damage_value):
+def update_graph(n_clicks,
+                 # 数值输入
+                 hit_value, wound_value, armor_value, pain_value,
+                 # 修正输入
+                 hit_modify, wound_modify, armor_modify,
+                 # 特殊规则
+                 reroll_hits, reroll_wounds, reroll_hit1, combo_strike, attack_input, damage_value):
     if n_clicks is None:  # 刚开始的时候不执行模拟
         return go.Figure()
 
@@ -58,6 +69,7 @@ def update_graph(n_clicks, hit_value, wound_value, armor_value, pain_value, rero
         wound_value,
         armor_value,
         damage_value,
+        hit_modify, wound_modify, armor_modify,
         pain_value,
         reroll_hits,
         reroll_wounds,
