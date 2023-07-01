@@ -8,6 +8,7 @@ from dash.exceptions import PreventUpdate
 from plotly.subplots import make_subplots
 
 from index import index
+from params import DiceParameters
 from simulate import simulate
 from dice_input import process_dice_input, process_input_value
 
@@ -19,6 +20,24 @@ app = dash.Dash(__name__,
                 )
 
 app.layout = html.Div([index])
+
+
+def process_results(results):
+    # 创建子图
+    fig = make_subplots(rows=4, cols=1, subplot_titles=('成功命中', '成功造伤', '未过保护', '最终伤害'),
+                        vertical_spacing=0.1)
+
+    # 对于每个子图，添加柱状图
+    for i, title in enumerate(['成功命中', '成功造伤', '未过保护', '最终伤害'], 1):
+        data = [res[i - 1] for res in results]  # 取出对应的结果数据
+        # 创建整数 bins
+        bins = np.arange(min(data), max(data) + 2)  # 我们需要包括最大值，所以+2
+        # 计算频率和 bin 的边界
+        counts, bins = np.histogram(data, bins=bins, density=True)
+        # 添加 Bar 图
+        fig.add_trace(go.Bar(x=bins[:-1], y=counts, name=title), row=i, col=1)
+
+    return fig
 
 
 @app.callback(
@@ -48,47 +67,39 @@ def update_graph(n_clicks,
                  # 修正输入
                  hit_modify, wound_modify, armor_modify,
                  # 特殊规则
-                 reroll_hits, reroll_wounds, reroll_hit1, combo_strike, attack_input, damage_value):
+                 reroll_hits, reroll_wounds, reroll_hit1, combo_strike,
+                 attack_input, damage_value):
+    dice_params = DiceParameters(
+        hit_value=hit_value,
+        wound_value=wound_value,
+        armor_value=armor_value,
+        pain_value=pain_value,
+        hit_modify=hit_modify,
+        wound_modify=wound_modify,
+        armor_modify=armor_modify,
+        reroll_hits=reroll_hits,
+        reroll_wounds=reroll_wounds,
+        reroll_hit1=reroll_hit1,
+        combo_strike=combo_strike,
+        attack_input=attack_input,
+        damage_value=damage_value)
+
     if n_clicks is None:  # 刚开始的时候不执行模拟
         return go.Figure()
 
-    reroll_hits = True if reroll_hits else False
-    reroll_wounds = True if reroll_wounds else False
-    reroll_hit1 = True if reroll_hit1 else False
-    combo_strike = True if combo_strike else False
+    if dice_params.attack_input == '' or dice_params.damage_value == '':
+        return go.Figure()  # 如果输入是空字符串，则返回一个空的图表
 
     # Process the input values
-    attack_value = process_input_value(attack_input)
-    damage_value = process_input_value(damage_value)
+    attack_value = process_input_value(dice_params.attack_input)
+    damage_value = process_input_value(dice_params.damage_value)
 
     # Run multiple simulations and get the results
     num_simulations = 10000
-    results = [simulate(
-        attack_value,
-        hit_value,
-        wound_value,
-        armor_value,
-        damage_value,
-        hit_modify, wound_modify, armor_modify,
-        pain_value,
-        reroll_hits,
-        reroll_wounds,
-        reroll_hit1,
-        combo_strike) for _ in range(num_simulations)]
+    results = [simulate(attack_value, dice_params) for _ in range(num_simulations)]
 
-    # 创建子图
-    fig = make_subplots(rows=4, cols=1, subplot_titles=('成功命中', '成功造伤', '未过保护', '最终伤害'),
-                        vertical_spacing=0.1)
-
-    # 对于每个子图，添加柱状图
-    for i, title in enumerate(['成功命中', '成功造伤', '未过保护', '最终伤害'], 1):
-        data = [res[i - 1] for res in results]  # 取出对应的结果数据
-        # 创建整数 bins
-        bins = np.arange(min(data), max(data) + 2)  # 我们需要包括最大值，所以+2
-        # 计算频率和 bin 的边界
-        counts, bins = np.histogram(data, bins=bins, density=True)
-        # 添加 Bar 图
-        fig.add_trace(go.Bar(x=bins[:-1], y=counts, name=title), row=i, col=1)
+    # Process the results and create the figure
+    fig = process_results(results)
 
     # 更新图形的外观
     fig.update_layout(
@@ -117,7 +128,7 @@ def reset_values(n):
         # prevent the callbacks to be executed when the dashboard starts
         raise PreventUpdate
     else:
-        return 4, 4, 4, 4, 7, 1, False, False, False, False  # replace these values with your default values
+        return '', 4, 4, 4, 7, '', False, False, False, False  # replace these values with your default values
 
 
 if __name__ == '__main__':

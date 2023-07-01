@@ -1,12 +1,12 @@
+import copy
+
 from dice_input import process_dice_input
 from function import roll_dice
 
 
-def simulate(attack_input, hit_value,
-             wound_value, armor_value, damage_value, pain_value,
-             hit_modify, wound_modify, armor_modify,
-             reroll_hits, reroll_wounds,
-             reroll_hit1, combo_strike):
+def simulate(attack_input, params):
+    hit_success, wound_success, protected_fail, damage, extra_hit = roll_dice(params)
+
     total_unprotected_count, total_hit_success, total_wound_success, total_damage_value = 0, 0, 0, 0
     total_extra_hit = 0
 
@@ -18,14 +18,7 @@ def simulate(attack_input, hit_value,
         attack_times = int(attack_input)
 
     for _ in range(attack_times):
-        hit_success, wound_success, unprotected_count, damage, extra_hit = roll_dice(hit_value, wound_value,
-                                                                                     armor_value,
-                                                                                     damage_value, pain_value,
-                                                                                     hit_modify, wound_modify,
-                                                                                     armor_modify,
-                                                                                     reroll_hits,
-                                                                                     reroll_wounds, reroll_hit1,
-                                                                                     combo_strike)
+        hit_success, wound_success, unprotected_count, damage, extra_hit = roll_dice(params)
 
         total_hit_success += hit_success
         total_wound_success += wound_success
@@ -34,15 +27,15 @@ def simulate(attack_input, hit_value,
         total_extra_hit += extra_hit
 
     for _ in range(total_extra_hit):
-        # 额外命中
-        hit_success, wound_success, unprotected_count, damage, extra_hit = roll_dice(0, wound_value,
-                                                                                     armor_value,
-                                                                                     damage_value, pain_value,
-                                                                                     hit_modify, wound_modify,
-                                                                                     armor_modify,
-                                                                                     reroll_hits,
-                                                                                     reroll_wounds, reroll_hit1,
-                                                                                     "no")
+        # Create a new DiceParameters object for extra hits by copying the original params
+        dice_params = copy.deepcopy(params)
+        # Change the hit_value and combo_strike parameters
+        dice_params.hit_value = 0
+        dice_params.combo_strike = False
+
+        # 将新的DiceParameters对象传递给roll_dice函数
+        hit_success, wound_success, unprotected_count, damage, extra_hit = roll_dice(dice_params)
+
         total_hit_success += hit_success
         total_wound_success += wound_success
         total_unprotected_count += unprotected_count
@@ -51,3 +44,4 @@ def simulate(attack_input, hit_value,
         total_extra_hit = 0
 
     return total_hit_success, total_wound_success, total_unprotected_count, total_damage_value
+
