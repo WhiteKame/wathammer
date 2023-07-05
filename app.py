@@ -7,7 +7,7 @@ import plotly.graph_objects as go
 from dash.exceptions import PreventUpdate
 from plotly.subplots import make_subplots
 
-from index import index
+from index import layout
 from params import DiceParameters
 from simulate import simulate
 from dice_input import process_dice_input, process_input_value
@@ -19,16 +19,16 @@ app = dash.Dash(__name__,
                 ],
                 )
 
-app.layout = html.Div([index])
+app.layout = html.Div([layout])
 
 
 def process_results(results):
     # 创建子图
-    fig = make_subplots(rows=4, cols=1, subplot_titles=('成功命中', '成功造伤', '未过保护', '最终伤害'),
+    fig = make_subplots(rows=5, cols=1, subplot_titles=('成功命中', '成功造伤', '未过保护', '致命伤害', '最终受到伤害'),
                         vertical_spacing=0.1)
 
     # 对于每个子图，添加柱状图
-    for i, title in enumerate(['成功命中', '成功造伤', '未过保护', '最终伤害'], 1):
+    for i, title in enumerate(['成功命中', '成功造伤', '未过保护', '致命伤害', '最终受到伤害'], 1):
         data = [res[i - 1] for res in results]  # 取出对应的结果数据
         # 创建整数 bins
         bins = np.arange(min(data), max(data) + 2)  # 我们需要包括最大值，所以+2
@@ -40,6 +40,7 @@ def process_results(results):
     return fig
 
 
+# 生成图表
 @app.callback(
     Output('simulation-graph', 'figure'),
     [Input('run-button', 'n_clicks'),
@@ -68,6 +69,7 @@ def update_graph(n_clicks,
                  hit_modify, wound_modify, armor_modify,
                  # 特殊规则
                  reroll_hits, reroll_wounds, reroll_hit1, combo_strike,
+                 # 攻击属性
                  attack_input, damage_value):
     dice_params = DiceParameters(
         hit_value=hit_value,
@@ -110,6 +112,7 @@ def update_graph(n_clicks,
     return fig
 
 
+# 重置数值
 @app.callback(
     [Output('attack_input', 'value'),
      Output('hit_value', 'value'),

@@ -1,7 +1,7 @@
 import copy
 
 from dice_input import process_dice_input
-from function import roll_dice
+from dice_roll import roll_dice
 
 
 def simulate(attack_input, params):
