@@ -124,8 +124,15 @@ def roll_dice(params):
     # 检查是否发生了毁灭伤害，如果是，则跳过保护检查
     if mortal_wound_success:
         protected_fail = True
+        # 在这里增加一次“不怕疼”检测
+        damage_mortal = roll_for_damage(params.damage_value, params.pain_value)
+        for _ in range(damage_mortal):
+            pain_roll = random.randint(1, 6)
+            if pain_roll >= params.pain_value:  # 如果“不怕疼”检测通过
+                damage_mortal -= 1  # 伤害值减1
+        damage = damage_mortal
     else:
         protected_fail = roll_for_armor(params.armor_value, params.armor_modify) if wound_success else False
+        damage = roll_for_damage(params.damage_value, params.pain_value) if protected_fail else 0
 
-    damage = roll_for_damage(params.damage_value, params.pain_value) if protected_fail else 0
     return hit_success, wound_success, protected_fail, damage, extra_hit, mortal_wound_success
