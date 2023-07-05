@@ -144,12 +144,40 @@ sp_rule = html.Div([
 
 # 特殊武器规则
 sp_weapon_rule = html.Div([
-    dbc.Checkbox(id="combo_strike",
-                 label="连击1",
-                 value=False, ),
+    # dbc.Checkbox(id="combo_strike",
+    #              label="连击1",
+    #              value=False, ),
+    dbc.RadioItems(
+        options=[
+            {"label": "无", "value": 0},
+            {"label": "连击1", "value": 1},
+            {"label": "连击2", "value": 2},
+            {"label": "连击D3", "value": 'D3'},
+        ],
+        value=0,
+        id="combo_strike",
+        inline=True,
+        className='mb-2',
+    ),
     dbc.Checkbox(id="mortal_wound",
                  label="毁灭伤害",
-                 value=False, )
+                 value=False, ),
+    dbc.Checkbox(id="lethal_hits",
+                 label="致命一击",
+                 value=False, ),
+    html.P("针对:"),
+    dbc.Select(
+        options=[
+            {"label": "无", "value": 7},
+            {"label": "针对 2+", "value": 2},
+            {"label": "针对 3+", "value": 3},
+            {"label": "针对 4+", "value": 4},
+            {"label": "针对 5+", "value": 5},
+            {"label": "针对 6+", "value": 6},
+        ],
+        id="anti",
+        value=7
+    )
 ], className="input_name")
 
 # 特殊规则输入
@@ -170,6 +198,7 @@ layout = html.Div([
     dbc.Row([
         dbc.Col([  # 左侧列
             html.H1('甲鱼的数学战锤 BETA v0.1'),
+            html.P('QQ群 869510322'),
             dbc.Row([
                 dbc.Col([
                     attack_input_div

@@ -57,7 +57,10 @@ def process_results(results):
      Input('reroll_hits', 'value'),
      Input('reroll_wounds', 'value'),
      Input('reroll_hit1', 'value'),
-     Input('combo_strike', 'value')
+     Input('combo_strike', 'value'),
+     Input('mortal_wound', 'value'),
+     Input('lethal_hits', 'value'),
+     Input('anti', 'value')
      ],  # 改变这里
     [State('attack_input', 'value'),
      State('damage_value', 'value')]
@@ -68,7 +71,7 @@ def update_graph(n_clicks,
                  # 修正输入
                  hit_modify, wound_modify, armor_modify,
                  # 特殊规则
-                 reroll_hits, reroll_wounds, reroll_hit1, combo_strike,
+                 reroll_hits, reroll_wounds, reroll_hit1, combo_strike, mortal_wound, lethal_hits, anti,
                  # 攻击属性
                  attack_input, damage_value):
     dice_params = DiceParameters(
@@ -83,6 +86,9 @@ def update_graph(n_clicks,
         reroll_wounds=reroll_wounds,
         reroll_hit1=reroll_hit1,
         combo_strike=combo_strike,
+        mortal_wound=mortal_wound,
+        lethal_hits=lethal_hits,
+        anti=anti,
         attack_input=attack_input,
         damage_value=damage_value)
 
@@ -123,7 +129,10 @@ def update_graph(n_clicks,
      Output('reroll_hits', 'value'),
      Output('reroll_wounds', 'value'),
      Output('reroll_hit1', 'value'),
-     Output('combo_strike', 'value')],
+     Output('combo_strike', 'value'),
+     Output('mortal_wound', 'value'),
+     Output('lethal_hits', 'value')
+     ],
     [Input('reset-button', 'n_clicks')]
 )
 def reset_values(n):
@@ -131,7 +140,7 @@ def reset_values(n):
         # prevent the callbacks to be executed when the dashboard starts
         raise PreventUpdate
     else:
-        return '', 4, 4, 4, 7, '', False, False, False, False  # replace these values with your default values
+        return '', 4, 4, 4, 7, '', False, False, False, False, False, False  # replace these values with your default values
 
 
 if __name__ == '__main__':

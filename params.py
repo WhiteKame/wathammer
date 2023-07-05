@@ -7,7 +7,7 @@ class DiceParameters:
                  # 特殊规则
                  reroll_hits, reroll_wounds, reroll_hit1,
                  # 武器规则
-                 combo_strike, mortal_wound,
+                 combo_strike, mortal_wound, lethal_hits, anti,
                  attack_input=None):
         self.hit_value = hit_value
         self.wound_value = wound_value
@@ -22,4 +22,6 @@ class DiceParameters:
         self.reroll_hit1 = reroll_hit1
         self.combo_strike = combo_strike
         self.mortal_wound = mortal_wound
+        self.lethal_hits = lethal_hits
+        self.anti = anti
         self.attack_input = attack_input
