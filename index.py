@@ -1,5 +1,6 @@
-from dash import dcc, html
 import dash_bootstrap_components as dbc
+from dash import dcc, html
+
 from function import create_slider
 
 # 输入攻击次数和伤害

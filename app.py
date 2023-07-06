@@ -1,18 +1,20 @@
 import dash
 import dash_bootstrap_components as dbc
 import numpy as np
-from dash import dcc, html
-from dash.dependencies import Input, Output, State
 import plotly.graph_objects as go
+from dash import html
+from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 from plotly.subplots import make_subplots
 
+from dice_input import process_input_value
 from index import layout
 from params import DiceParameters
 from simulate import simulate
-from dice_input import process_dice_input, process_input_value
 
 app = dash.Dash(__name__,
+                title='Wathammer',
+                update_title='Loading...',
                 external_stylesheets=[dbc.themes.BOOTSTRAP],
                 meta_tags=[
                     {"name": "viewport", "content": "width=device-width, initial-scale=1"},
@@ -131,7 +133,8 @@ def update_graph(n_clicks,
      Output('reroll_hit1', 'value'),
      Output('combo_strike', 'value'),
      Output('mortal_wound', 'value'),
-     Output('lethal_hits', 'value')
+     Output('lethal_hits', 'value'),
+     Output('anti', 'value')
      ],
     [Input('reset-button', 'n_clicks')]
 )
@@ -140,7 +143,8 @@ def reset_values(n):
         # prevent the callbacks to be executed when the dashboard starts
         raise PreventUpdate
     else:
-        return '', 4, 4, 4, 7, '', False, False, False, False, False, False  # replace these values with your default values
+        return '', 4, 4, 4, 7, '', False, False, False, False, False, False, False, False
+        # replace these values with your default values
 
 
 if __name__ == '__main__':

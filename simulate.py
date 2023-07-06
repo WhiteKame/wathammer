@@ -24,7 +24,6 @@ def simulate(attack_input, params):
         total_damage_value += damage
         total_extra_hit += extra_hit
         total_mortal_wound += mortal_wound
-        total_damage_value += mortal_wound
 
     for _ in range(total_extra_hit):
         # Create a new DiceParameters object for extra hits by copying the original params
@@ -43,6 +42,5 @@ def simulate(attack_input, params):
         # Reset extra hit for each simulation
         total_extra_hit = 0
         total_mortal_wound += mortal_wound
-        total_damage_value += mortal_wound
 
     return total_hit_success, total_wound_success, total_unprotected_count, total_mortal_wound, total_damage_value

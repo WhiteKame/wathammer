@@ -1,5 +1,5 @@
-import re
 import random
+import re
 
 
 def process_dice_input(dice_input):
