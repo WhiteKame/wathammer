@@ -20,32 +20,19 @@ app = dash.Dash(__name__,
                     {"name": "viewport", "content": "width=device-width, initial-scale=1"},
                 ],
                 )
-server = app.server  # 创建服务器链接。/
+server = app.server #创建服务器链接。/
 
 app.layout = html.Div([layout])
 
 
 def process_results(results):
-    # 创建子图的标题
-    subplot_titles = ['成功命中', '成功造伤', '未过保护', '致命伤害', '最终受到伤害']
-
-    # 检查'致命伤害'数据是否全为0，如果是，就从标题中删除'致命伤害'
-    mortal_wound_data = [res[3] for res in results]
-    if all(value == 0 for value in mortal_wound_data):
-        subplot_titles.remove('致命伤害')
-
     # 创建子图
-    fig = make_subplots(rows=len(subplot_titles), cols=1, subplot_titles=subplot_titles, vertical_spacing=0.1)
+    fig = make_subplots(rows=5, cols=1, subplot_titles=('成功命中', '成功造伤', '未过保护', '致命伤害', '最终受到伤害'),
+                        vertical_spacing=0.1)
 
     # 对于每个子图，添加柱状图
-    for i, title in enumerate(subplot_titles, 1):
-        if title == '致命伤害':
-            continue  # 跳过绘制'致命伤害'的子图
-
-        # 取出对应的结果数据
-        data_index = ['成功命中', '成功造伤', '未过保护', '致命伤害', '最终受到伤害'].index(title)
-        data = [res[data_index] for res in results]
-
+    for i, title in enumerate(['成功命中', '成功造伤', '未过保护', '致命伤害', '最终受到伤害'], 1):
+        data = [res[i - 1] for res in results]  # 取出对应的结果数据
         # 创建整数 bins
         bins = np.arange(min(data), max(data) + 2)  # 我们需要包括最大值，所以+2
         # 计算频率和 bin 的边界
