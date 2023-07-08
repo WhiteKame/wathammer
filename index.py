@@ -194,11 +194,52 @@ graph_div = html.Div([
     dcc.Graph(id='simulation-graph')
 ], style={'height': '100vh', 'overflow': 'scroll'})
 
+# 乞讨码
+modal_body = html.Div([
+    html.P(["如果可以希望你能赞助一个兽人小子来支援大机霸的服务器支出"]),
+    dbc.Row([
+        dbc.Col([
+            html.Div([
+                html.H5("支付宝"),  # 图片标题
+                html.Img(src="/assets/alipay.JPG", style={'width': '100%', 'height': 'auto'}),
+            ]),
+        ], width=6, style={'display': 'flex', 'flex-direction': 'column', 'align-items': 'center'}),
+        dbc.Col([
+            html.Div([
+                html.H5("微信"),  # 图片标题
+                html.Img(src="/assets/wechat.JPG", style={'width': '100%', 'height': 'auto'}),
+            ]),
+        ], width=6, style={'display': 'flex', 'flex-direction': 'column', 'align-items': 'center'}),
+    ])
+])
+
+modal = html.Div(
+    [
+        dbc.Button("赞助我一个兽人小子", id="open", n_clicks=0),
+        dbc.Modal(
+            [
+                dbc.ModalHeader(dbc.ModalTitle("感谢你支持我的工作！")),
+                dbc.ModalBody(modal_body),
+                dbc.ModalFooter(
+                    dbc.Button(
+                        "谢谢!", id="close", className="ms-auto", n_clicks=0
+                    )
+                ),
+            ],
+            id="modal",
+            size="lg",
+            is_open=False,
+        ),
+    ]
+)
 # 输出页
 layout = html.Div([
     dbc.Row([
         dbc.Col([  # 左侧列
-            html.H1('甲鱼的数学战锤 BETA v0.1'),
+            dbc.Row([
+                dbc.Col(html.H1('甲鱼的数学战锤 BETA v0.1'), width=9),
+                dbc.Col(modal, width=3)
+            ], className="align-items-center"),
             html.P('QQ群 869510322'),
             dbc.Row([
                 dbc.Col([

@@ -25,6 +25,17 @@ server = app.server  # 创建服务器链接。/
 app.layout = html.Div([layout])
 
 
+@app.callback(
+    Output("modal", "is_open"),
+    [Input("open", "n_clicks"), Input("close", "n_clicks")],
+    [State("modal", "is_open")],
+)
+def toggle_modal(n1, n2, is_open):
+    if n1 or n2:
+        return not is_open
+    return is_open
+
+
 def process_results(results):
     # 创建子图
     fig = make_subplots(rows=5, cols=1, subplot_titles=('成功命中', '成功造伤', '未过保护', '致命伤害', '最终受到伤害'),
