@@ -20,7 +20,7 @@ app = dash.Dash(__name__,
                     {"name": "viewport", "content": "width=device-width, initial-scale=1"},
                 ],
                 )
-server = app.server #创建服务器链接。/
+server = app.server  # 创建服务器链接。/
 
 app.layout = html.Div([layout])
 
@@ -144,7 +144,7 @@ def reset_values(n):
         # prevent the callbacks to be executed when the dashboard starts
         raise PreventUpdate
     else:
-        return '', 4, 4, 4, 7, '', False, False, False, False, False, False, False, False
+        return '', 4, 4, 4, 7, '', False, False, False, 0, False, False, 7
         # replace these values with your default values
 
 

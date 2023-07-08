@@ -49,8 +49,9 @@ def roll_for_wound(wound_value, wound_modify, reroll_wounds, mortal_wound, anti)
 
     # 如果 wound_roll 大于等于 anti，设定暴击伤害和造伤成功
     if wound_roll >= anti:
-        mortal_wound_success = True
         wound_success = True
+        # 只有在有 mortal_wound 的情况下，才将 wound_roll >= anti 的情况视为致命伤
+        mortal_wound_success = mortal_wound
     else:
         # 否则按照原来的逻辑判断
         if wound_roll == 6 and mortal_wound:
