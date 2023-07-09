@@ -3,45 +3,50 @@ import random
 from dice_input import process_dice_input
 
 
-def roll_for_hit(hit_value, hit_modify, reroll_hits, reroll_hit1, combo_strike, lethal_hits):
-    hit_roll = random.randint(1, 6)
-
-    # 暴击命中
-    critical_hit = 6
-    lethal_hits_success = False
-
-    if hit_roll == critical_hit and lethal_hits:
-        lethal_hits_success = True
-
-    # Check for extra hit before applying hit modify
-    if hit_roll == 6 and combo_strike != 0:
-        if combo_strike == 'D3':
-            extra_hit = random.randint(1, 3)
-        else:
-            extra_hit = combo_strike
-    else:
-        extra_hit = 0
-
-    if hit_roll == 1 and reroll_hit1:
-        hit_roll = random.randint(1, 6)
-    elif hit_roll < hit_value and reroll_hits:
-        hit_roll = random.randint(1, 6)
-
-    # Apply hit modify after checking for extra hit
-    hit_roll_modified = hit_roll + hit_modify
-
-    # If unmodified roll is 6, hit is always successful. If unmodified roll is 1, hit always fails
-    if hit_roll == 6:
+def roll_for_hit(hit_value, hit_modify, torrent, reroll_hits, reroll_hit1, combo_strike, lethal_hits):
+    if torrent:
         hit_success = True
-    elif hit_roll == 1:
-        hit_success = False
+        extra_hit = False
+        lethal_hits_success = False
     else:
-        hit_success = hit_roll_modified >= hit_value
+        hit_roll = random.randint(1, 6)
+
+        # 暴击命中
+        critical_hit = 6
+        lethal_hits_success = False
+
+        if hit_roll == critical_hit and lethal_hits:
+            lethal_hits_success = True
+
+        # Check for extra hit before applying hit modify
+        if hit_roll == 6 and combo_strike != 0:
+            if combo_strike == 'D3':
+                extra_hit = random.randint(1, 3)
+            else:
+                extra_hit = combo_strike
+        else:
+            extra_hit = 0
+
+        if hit_roll == 1 and reroll_hit1:
+            hit_roll = random.randint(1, 6)
+        elif hit_roll < hit_value and reroll_hits:
+            hit_roll = random.randint(1, 6)
+
+        # Apply hit modify after checking for extra hit
+        hit_roll_modified = hit_roll + hit_modify
+
+        # If unmodified roll is 6, hit is always successful. If unmodified roll is 1, hit always fails
+        if hit_roll == 6:
+            hit_success = True
+        elif hit_roll == 1:
+            hit_success = False
+        else:
+            hit_success = hit_roll_modified >= hit_value
 
     return hit_success, extra_hit, lethal_hits_success
 
 
-def roll_for_wound(wound_value, wound_modify, reroll_wounds, mortal_wound, anti):
+def roll_for_wound(wound_value, wound_modify, reroll_wounds, reroll_wounds1, mortal_wound, anti):
     wound_roll = random.randint(1, 6)
 
     # 暴击造伤
@@ -62,7 +67,9 @@ def roll_for_wound(wound_value, wound_modify, reroll_wounds, mortal_wound, anti)
         # 造伤修正
         wound_roll_modified = wound_roll + wound_modify
 
-        if wound_roll < wound_value and reroll_wounds:
+        if wound_roll == 1 and reroll_wounds1:
+            hit_roll = random.randint(1, 6)
+        elif wound_roll < wound_value and reroll_wounds:
             wound_roll = random.randint(1, 6)
 
         # 未修正的6永远成功，未修正的1永远失败
@@ -111,15 +118,16 @@ def roll_for_damage(damage_value, pain_value):
 
 
 def roll_dice(params):
-    hit_success, extra_hit, lethal_hits_success = roll_for_hit(params.hit_value, params.hit_modify, params.reroll_hits,
-                                                               params.reroll_hit1,
+    hit_success, extra_hit, lethal_hits_success = roll_for_hit(params.hit_value, params.hit_modify, params.torrent,
+                                                               params.reroll_hits, params.reroll_hit1,
                                                                params.combo_strike, params.lethal_hits)
+
     if lethal_hits_success:
         wound_success = True
         mortal_wound_success = False  # 判定致命一击
     else:
         wound_success, mortal_wound_success = roll_for_wound(params.wound_value, params.wound_modify,
-                                                             params.reroll_wounds,
+                                                             params.reroll_wounds, params.reroll_hit1,
                                                              params.mortal_wound, params.anti) if hit_success else (
             False, False)
 

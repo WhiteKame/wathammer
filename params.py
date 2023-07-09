@@ -5,7 +5,7 @@ class DiceParameters:
                  # 攻击修正
                  hit_modify, wound_modify, armor_modify,
                  # 特殊规则
-                 reroll_hits, reroll_wounds, reroll_hit1,
+                 torrent, reroll_hits, reroll_wounds, reroll_hit1, reroll_wound1,
                  # 武器规则
                  combo_strike, mortal_wound, lethal_hits, anti,
                  attack_input=None):
@@ -17,9 +17,11 @@ class DiceParameters:
         self.hit_modify = hit_modify
         self.wound_modify = wound_modify
         self.armor_modify = armor_modify
+        self.torrent = torrent
         self.reroll_hits = reroll_hits
         self.reroll_wounds = reroll_wounds
         self.reroll_hit1 = reroll_hit1
+        self.reroll_wound1 = reroll_wound1
         self.combo_strike = combo_strike
         self.mortal_wound = mortal_wound
         self.lethal_hits = lethal_hits

@@ -68,9 +68,11 @@ def process_results(results):
      Input('wound_modify', 'value'),
      Input('armor_modify', 'value'),
      # 特殊规则
+     Input('torrent', 'value'),
      Input('reroll_hits', 'value'),
      Input('reroll_wounds', 'value'),
      Input('reroll_hit1', 'value'),
+     Input('reroll_wound1', 'value'),
      Input('combo_strike', 'value'),
      Input('mortal_wound', 'value'),
      Input('lethal_hits', 'value'),
@@ -85,7 +87,8 @@ def update_graph(n_clicks,
                  # 修正输入
                  hit_modify, wound_modify, armor_modify,
                  # 特殊规则
-                 reroll_hits, reroll_wounds, reroll_hit1, combo_strike, mortal_wound, lethal_hits, anti,
+                 torrent, reroll_hits, reroll_wounds, reroll_hit1, reroll_wound1, combo_strike, mortal_wound,
+                 lethal_hits, anti,
                  # 攻击属性
                  attack_input, damage_value):
     dice_params = DiceParameters(
@@ -96,9 +99,11 @@ def update_graph(n_clicks,
         hit_modify=hit_modify,
         wound_modify=wound_modify,
         armor_modify=armor_modify,
+        torrent=torrent,
         reroll_hits=reroll_hits,
         reroll_wounds=reroll_wounds,
         reroll_hit1=reroll_hit1,
+        reroll_wound1=reroll_wound1,
         combo_strike=combo_strike,
         mortal_wound=mortal_wound,
         lethal_hits=lethal_hits,
@@ -141,9 +146,11 @@ def update_graph(n_clicks,
      Output('armor_value', 'value'),
      Output('pain_value', 'value'),
      Output('damage_value', 'value'),
+     Output('torrent', 'value'),
      Output('reroll_hits', 'value'),
      Output('reroll_wounds', 'value'),
      Output('reroll_hit1', 'value'),
+     Output('reroll_wound1', 'value'),
      Output('combo_strike', 'value'),
      Output('mortal_wound', 'value'),
      Output('lethal_hits', 'value'),
@@ -156,7 +163,7 @@ def reset_values(n):
         # prevent the callbacks to be executed when the dashboard starts
         raise PreventUpdate
     else:
-        return '', 4, 4, 4, 7, '', False, False, False, 0, False, False, 7
+        return '', 4, 4, 4, 7, '', False, False, False, False, False, 0, False, False, 7
         # replace these values with your default values
 
 

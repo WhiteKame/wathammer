@@ -22,7 +22,7 @@ def simulate(attack_input, params):
         total_wound_success += wound_success
         total_unprotected_count += unprotected_count
         total_damage_value += damage
-        total_extra_hit += extra_hit
+        total_extra_hit += int(extra_hit)
         total_mortal_wound += mortal_wound
 
     for _ in range(total_extra_hit):
