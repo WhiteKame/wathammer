@@ -132,6 +132,9 @@ data_input_div = html.Div([
 
 # 通用特效
 sp_rule = html.Div([
+    dbc.Checkbox(id="torrent",
+                 label="洪流",
+                 value=False, ),
     dbc.Checkbox(id="reroll_hits",
                  label="全重投命中",
                  value=False, ),
@@ -140,6 +143,9 @@ sp_rule = html.Div([
                  value=False, ),
     dbc.Checkbox(id="reroll_wounds",
                  label="全重投造伤",
+                 value=False, ),
+    dbc.Checkbox(id="reroll_wound1",
+                 label="重投造伤1",
                  value=False, )
 ], className="input_name")
 
@@ -148,37 +154,43 @@ sp_weapon_rule = html.Div([
     # dbc.Checkbox(id="combo_strike",
     #              label="连击1",
     #              value=False, ),
-    dbc.RadioItems(
-        options=[
-            {"label": "无", "value": 0},
-            {"label": "连击1", "value": 1},
-            {"label": "连击2", "value": 2},
-            {"label": "连击D3", "value": 'D3'},
-        ],
-        value=0,
-        id="combo_strike",
-        inline=True,
-        className='mb-2',
-    ),
+    dbc.Row([
+        dbc.Col(html.Label("连击:"), width=3),
+        dbc.Col(dbc.Select(
+            options=[
+                {"label": "无", "value": 0},
+                {"label": "1", "value": 1},
+                {"label": "2", "value": 2},
+                {"label": "3", "value": 3},
+                {"label": "D3", "value": 'D3'},
+            ],
+            id="combo_strike",
+            size="sm",
+            value=0
+        ), width=9)
+    ], className="align-items-center p-1"),
+    dbc.Row([
+        dbc.Col(html.Label("针对:"), width=3),
+        dbc.Col(dbc.Select(
+            options=[
+                {"label": "无", "value": 7},
+                {"label": "针对 2+", "value": 2},
+                {"label": "针对 3+", "value": 3},
+                {"label": "针对 4+", "value": 4},
+                {"label": "针对 5+", "value": 5},
+                {"label": "针对 6+", "value": 6},
+            ],
+            id="anti",
+            size="sm",
+            value=7
+        ), width=9),
+    ], className="align-items-center p-1"),
     dbc.Checkbox(id="mortal_wound",
                  label="毁灭伤害",
                  value=False, ),
     dbc.Checkbox(id="lethal_hits",
                  label="致命一击",
-                 value=False, ),
-    html.P("针对:"),
-    dbc.Select(
-        options=[
-            {"label": "无", "value": 7},
-            {"label": "针对 2+", "value": 2},
-            {"label": "针对 3+", "value": 3},
-            {"label": "针对 4+", "value": 4},
-            {"label": "针对 5+", "value": 5},
-            {"label": "针对 6+", "value": 6},
-        ],
-        id="anti",
-        value=7
-    )
+                 value=False, )
 ], className="input_name")
 
 # 特殊规则输入
@@ -237,18 +249,18 @@ layout = html.Div([
     dbc.Row([
         dbc.Col([  # 左侧列
             dbc.Row([
-                dbc.Col(html.H1('甲鱼的数学战锤 BETA v0.1'), width=9),
-                dbc.Col(modal, width=3)
+                dbc.Col(html.H1('甲鱼的数学战锤 BETA v0.1'), md=9, xs=12),
+                dbc.Col(modal, md=3, xs=12)
             ], className="align-items-center"),
             html.P('QQ群 869510322'),
             dbc.Row([
                 dbc.Col([
                     attack_input_div
-                ]),
+                ], xs=12, md=6),
                 dbc.Col([
                     sp_rule_input_div
-                ])
-            ], className='row-eq-height'),
+                ], xs=12, md=6)
+            ]),
             data_input_div
         ],
             xs=12, md=6),  # 调整列宽比例

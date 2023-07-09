@@ -15,7 +15,7 @@ from simulate import simulate
 app = dash.Dash(__name__,
                 title='Wathammer',
                 update_title='Loading...',
-                external_stylesheets=[dbc.themes.BOOTSTRAP],
+                external_stylesheets=[dbc.themes.FLATLY],
                 meta_tags=[
                     {"name": "viewport", "content": "width=device-width, initial-scale=1"},
                 ],
@@ -127,6 +127,7 @@ def update_graph(n_clicks,
     fig.update_layout(
         height=1000,  # 设置图形的高度
         title_text="模拟结果",  # 设置图形的标题
+        showlegend=False,
     )
 
     return fig
