@@ -1,0 +1,25 @@
+body {
+    margin: 3em;
+}
+
+.input_name {
+    margin: 1em 0px;
+}
+
+#reset-button {
+    margin: 0px  20px;
+}
+
+.rc-slider-mark-text {
+    min-width: 24px;
+}
+
+/*输入栏的两栏保持高度一致并且不会因为内容变化而增加*/
+.row-eq-height {
+    display: flex;
+    flex-wrap: nowrap;
+}
+.row-eq-height > [class*='col-'] {
+    display: flex;
+    flex-direction: column;
+}
